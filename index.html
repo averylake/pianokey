@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piano Key — Avery Lake</title>
+  <meta name="description" content="A meditation on the slow surrender of human voice to machine prediction. From Dostoevsky, 1864, to now.">
+  <meta name="author" content="Avery Lake">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Piano Key — Avery Lake">
+  <meta property="og:description" content="A meditation on the slow surrender of human voice to machine prediction. From Dostoevsky, 1864, to now.">
+  <meta property="og:image" content="https://pianokey.averylakeofficial.com/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://pianokey.averylakeofficial.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Piano Key — Avery Lake">
+  <meta name="twitter:description" content="A meditation on the slow surrender of human voice to machine prediction.">
+  <meta name="twitter:image" content="https://pianokey.averylakeofficial.com/og.jpg">
+  <link rel="canonical" href="https://pianokey.averylakeofficial.com">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-snap-type:y mandatory;overflow-y:scroll;height:100%}
+    body{height:100%;font-size:clamp(14px,1.5vw,17px)}
+    #progress{position:fixed;right:0;top:0;width:2px;height:100vh;z-index:100}
+    #progress-fill{width:100%;height:0%;background:rgba(240,232,216,.12);transition:height .2s linear}
+    .moment{height:100vh;min-height:100vh;scroll-snap-align:start;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(40px,8vw,100px) clamp(28px,7vw,100px);transition:background-color 1s ease,color 1s ease}
+    .moment.has-visual{display:grid;grid-template-rows:54% 46%;align-items:stretch;padding:0}
+    .visual-zone{display:flex;align-items:center;justify-content:center;padding:7vh clamp(28px,7vw,80px) 2vh;opacity:0;transform:translateY(10px);transition:opacity 1.4s ease .2s,transform 1.2s ease .2s}
+    .moment.visible .visual-zone{opacity:1;transform:translateY(0)}
+    .visual-zone svg *{animation-play-state:paused}
+    .moment.visible .visual-zone svg *{animation-play-state:running}
+    .moment-inner{max-width:640px;width:100%}
+    .moment.has-visual .moment-inner{align-self:start;padding:0 clamp(28px,7vw,80px) 8vh;margin:0 auto;display:flex;flex-direction:column;gap:1.1em}
+    .year{font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:opacity .7s ease,transform .7s ease}
+    .headline{opacity:0;transform:translateY(14px);transition:opacity .8s ease .2s,transform .8s ease .2s}
+    .body{opacity:0;transform:translateY(14px);transition:opacity .8s ease .4s,transform .8s ease .4s}
+    .moment.visible .year,.moment.visible .headline,.moment.visible .body{opacity:1;transform:translateY(0)}
+
+    /* Eras */
+    .era-prophecy{background:#0e0c09;color:#f0e8d8;font-family:'IM Fell English',Georgia,serif;position:relative;cursor:none}
+    .era-prophecy::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url('dostoevsky.jpg') center/cover no-repeat;opacity:0.12;filter:grayscale(1) brightness(0.8);pointer-events:none;transition:opacity 2s}
+    .era-prophecy.shattered::before{opacity:0}
+    .era-prophecy .moment-inner{position:relative;z-index:1;opacity:0;transition:opacity 2s ease .5s}
+    .era-prophecy.shattered .moment-inner{opacity:1}
+    .era-prophecy .year{color:#6a5a40}
+    .era-prophecy .headline{font-size:clamp(20px,2.8vw,36px);line-height:1.75;font-style:italic}
+    .era-prophecy .body{font-size:13px;letter-spacing:.07em;color:#8a7a60}
+
+    /* Site header */
+    .site-header{position:absolute;top:0;left:0;right:0;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;z-index:2;font-family:'Space Mono','Courier New',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase}
+    .site-header .sh-title{color:#6a5a40;position:relative}
+    .site-header .sh-controls{display:flex;gap:24px;align-items:center}
+    .site-header .sh-btn{background:transparent;border:none;font:inherit;color:#5a4a30;cursor:pointer;transition:color .3s ease;text-transform:uppercase;letter-spacing:inherit}
+    .site-header .sh-btn:hover{color:#a08050}
+    .site-header .sh-artist{color:#5a4a30;text-decoration:none;transition:color .3s ease}
+    .site-header .sh-artist:hover{color:#a08050}
+
+    .era-early{background:#161410;color:#e4dccb;font-family:'IM Fell English',Georgia,serif}
+    .era-early .year{color:#5a4a30}
+    .era-early .headline{font-size:clamp(17px,2.2vw,28px);line-height:1.8}
+    .era-early .body{font-size:clamp(13px,1.4vw,16px);line-height:1.9;color:#8a7a60}
+
+    .era-mid{background:#111110;color:#d8d4c8;font-family:'IM Fell English',Georgia,serif}
+    .era-mid .year{color:#504840}
+    .era-mid .headline{font-size:clamp(16px,2vw,26px);line-height:1.8}
+    .era-mid .body{font-size:clamp(13px,1.4vw,16px);line-height:1.95;color:#807870}
+
+    .era-tech{background:#090909;color:#c4c4c0;font-family:'Space Mono','Courier New',monospace}
+    .era-tech .year{color:#444440}
+    .era-tech .headline{font-size:clamp(15px,1.8vw,22px);line-height:1.75}
+    .era-tech .body{font-size:clamp(12px,1.3vw,15px);line-height:2;color:#606060}
+
+    .era-late{background:#060606;color:#a8a8a4;font-family:'Space Mono','Courier New',monospace}
+    .era-late .year{color:#3c3c38}
+    .era-late .headline{font-size:clamp(14px,1.7vw,21px);line-height:1.85}
+    .era-late .body{font-size:clamp(12px,1.3vw,15px);line-height:2.1;color:#505050}
+
+    .era-spec{background:#040404;color:#5c5c58;font-family:'Space Mono','Courier New',monospace}
+    .era-spec .year{color:#303030;font-style:italic}
+    .era-spec .headline{font-size:clamp(13px,1.6vw,20px);line-height:1.95;color:#505050}
+    .era-spec .body{font-size:clamp(12px,1.3vw,15px);line-height:2.1;color:#363632}
+
+    .era-void{background:#020202;color:#3a3a38;font-family:'Space Mono','Courier New',monospace}
+    .era-void .year{color:#484840;letter-spacing:.28em}
+    .era-void .headline{font-size:clamp(13px,1.5vw,18px);line-height:2.1;color:#3c3c3a}
+    .void-cursor{display:inline-block;width:10px;height:1.1em;background:#282826;vertical-align:text-bottom;animation:void-pulse 2.6s ease-in-out infinite;margin-top:2.5em}
+    @keyframes void-pulse{0%,100%{opacity:.25}50%{opacity:.7}}
+
+    .era-signal{background:#1a1510;color:#f0e8d8;font-family:'IM Fell English',Georgia,serif}
+    #signal-prompt{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#6a5a40;margin-bottom:2em;opacity:0;transition:opacity 1.6s ease 1s}
+    .moment.visible #signal-prompt{opacity:1}
+    #signal-input{font-family:'IM Fell English',Georgia,serif;font-size:clamp(19px,2.6vw,32px);line-height:1.8;color:#f0e8d8;background:transparent;border:none;outline:none;width:100%;resize:none;caret-color:#f0e8d8}
+    #signal-input::placeholder{color:#2e2418;font-style:italic}
+    #signal-byline{margin-top:56px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#3a3020;line-height:2;opacity:0;transition:opacity 2.4s ease}
+    #signal-byline.show{opacity:1}
+    /* Artifact UI */
+    #signal-artifact-ui{margin-top:52px;opacity:0;transform:translateY(10px);transition:opacity 1.8s ease .4s,transform 1.4s ease .4s;pointer-events:none}
+    #signal-artifact-ui.show{opacity:1;transform:translateY(0);pointer-events:auto}
+    #signal-name-row{margin-bottom:1.6em}
+    #signal-name{font-family:'Space Mono','Courier New',monospace;font-size:11px;letter-spacing:.12em;background:transparent;border:none;border-bottom:1px solid #2e2418;color:#8a7a60;padding:7px 0;width:min(280px,80%);outline:none}
+    #signal-name::placeholder{color:#2a1e10;letter-spacing:.06em}
+    #signal-name:focus{border-bottom-color:#6a5a40}
+    #signal-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:2em}
+    .signal-btn{font-family:'Space Mono','Courier New',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;background:transparent;border:1px solid #2e2418;color:#5a4a30;padding:9px 16px;cursor:pointer;transition:border-color .3s ease,color .3s ease}
+    .signal-btn:hover{border-color:#6a5a40;color:#a08050}
+    .signal-btn:active{background:rgba(106,90,64,.08)}
+    #signal-protocol{font-family:'Space Mono','Courier New',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#5a5040;line-height:2.2}
+    #signal-order-row{margin-top:4px;margin-bottom:1.6em}
+    #btn-order{display:inline-block;text-decoration:none;color:#5a4a30;border-color:#3a2e1e;cursor:pointer}
+    #btn-order.ready{color:#8a6a40;border-color:#5a4028}
+    #btn-order.ready:hover{border-color:#a08050;color:#c09040}
+    #order-hint{font-family:'Space Mono','Courier New',monospace;font-size:9px;letter-spacing:.1em;color:#4a3a20;margin-top:8px;opacity:0;transition:opacity .8s ease}
+    #order-hint.show{opacity:1}
+
+    .tab-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;border:1px solid #3a3828;color:#6a6050;padding:3px 8px;border-radius:3px;letter-spacing:.06em;vertical-align:middle;margin-left:6px}
+    /* Scroll hint */
+    #scroll-hint{position:fixed;bottom:clamp(24px,5vh,44px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;opacity:0;transition:opacity 1.2s ease;z-index:50;pointer-events:none}
+    #scroll-hint.show{opacity:1}
+    #scroll-hint.gone{opacity:0;transition:opacity .5s ease}
+    .sh-label{font-family:'Space Mono','Courier New',monospace;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:#3a3020}
+    .sh-arrow{display:block;width:10px;height:22px;position:relative}
+    .sh-arrow::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:14px;background:#3a3020;animation:sh-drop 2.2s ease-in-out infinite}
+    .sh-arrow::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%) rotate(45deg);width:6px;height:6px;border-right:1px solid #3a3020;border-bottom:1px solid #3a3020}
+    @keyframes sh-drop{0%,100%{opacity:.2;transform:translateX(-50%) translateY(-3px)}55%{opacity:.8;transform:translateX(-50%) translateY(0)}}
+
+    /* Keyframes */
+    @keyframes key-press{0%,65%,100%{transform:translateY(0)}40%,55%{transform:translateY(7px)}}
+    @keyframes t9-glow{0%,9%,100%{opacity:.35}4%,7%{opacity:1}}
+    @keyframes text-reveal{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0% 0 0)}}
+    @keyframes drop-in{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes ghost-in{0%,35%{opacity:0}55%,90%{opacity:1}95%,100%{opacity:0}}
+    @keyframes cursor-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+    @keyframes code-ghost{0%,25%{opacity:0}45%,80%{opacity:1}90%,100%{opacity:0}}
+    @keyframes chat-reveal{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0% 0 0)}}
+    @keyframes line-appear{0%,100%{opacity:0;transform:translateX(-8px)}20%,75%{opacity:1;transform:translateX(0)}}
+    @keyframes sr-flash{0%,20%,100%{}10%{stroke:#8a7060}}
+    @keyframes sr-text-flash{0%,20%,100%{fill:#605848}10%{fill:#c0a888}}
+
+    .pk-pressed{transform:translateY(7px)}
+    .pn-pressed{transform:translateY(7px)}
+
+    /* Theme Light Overrides */
+    .theme-light{background:#ffffff;color:#1a1510}
+    .theme-light .era-prophecy{background:#fdfbf7;color:#2e2418}
+    .theme-light .era-prophecy::before{filter:grayscale(1) brightness(1.1);opacity:0.04;mix-blend-mode:multiply}
+    .theme-light .era-prophecy .year{color:#8a7a60}
+    .theme-light .era-prophecy .body{color:#6a5a40}
+    .theme-light .site-header .sh-btn, .theme-light .site-header .sh-artist {color:#8a7a60}
+    .theme-light .site-header .sh-btn:hover, .theme-light .site-header .sh-artist:hover {color:#3a3020}
+    .theme-light .era-early{background:#f4f2eb;color:#3a3832}
+    .theme-light .era-early .year{color:#8a7a60}
+    .theme-light .era-early .body{color:#6a5a40}
+    .theme-light .era-mid{background:#edebe4;color:#4a4842}
+    .theme-light .era-mid .year{color:#807870}
+    .theme-light .era-mid .body{color:#6a6258}
+    .theme-light .era-tech{background:#e6e4dc;color:#5a5852}
+    .theme-light .era-tech .year{color:#606060}
+    .theme-light .era-tech .body{color:#7a7872}
+    .theme-light .era-late{background:#dfddd5;color:#6a6862}
+    .theme-light .era-late .year{color:#505050}
+    .theme-light .era-late .body{color:#8a8882}
+    .theme-light .era-spec{background:#d8d6ce;color:#7a7872}
+    .theme-light .era-spec .year{color:#404040}
+    .theme-light .era-spec .body{color:#9a9892}
+    .theme-light .era-void{background:#ffffff;color:#d4cec2}
+    .theme-light .era-void .year{color:#d4cec2}
+    .theme-light .era-void .headline{color:#c5c0b8}
+    .theme-light .void-cursor{background:#c5c0b8}
+    .theme-light .era-signal{background:#fbfaf6;color:#2e2418}
+    .theme-light #signal-prompt{color:#8a7a60}
+    .theme-light #signal-input{color:#2e2418;caret-color:#2e2418}
+    .theme-light #signal-input::placeholder{color:#d6cebf}
+    .theme-light #signal-byline{color:#8a7a60}
+    .theme-light #signal-name{border-bottom-color:#c8bfae;color:#4a3c22}
+    .theme-light #signal-name:focus{border-bottom-color:#8a7a60}
+    .theme-light .signal-btn{border-color:#d6cebf;color:#8a7a60}
+    .theme-light .signal-btn:hover{border-color:#8a7a60;color:#4a3c22;background:rgba(0,0,0,.03)}
+    .theme-light .signal-btn:active{background:rgba(0,0,0,.06)}
+    .theme-light #signal-protocol{color:#9a8a7a}
+    .theme-light #char-count{color:#a89a88}
+    .theme-light #btn-order{color:#8a7a60;border-color:#d6cebf}
+    .theme-light #btn-order.ready{color:#5a4a30;border-color:#a89d8c}
+    .theme-light #btn-order.ready:hover{border-color:#4a3a20;color:#2a2010}
+    .theme-light #order-hint{color:#8a7a60}
+    .theme-light #progress-fill{background:rgba(20,14,8,.12)}
+    .theme-light .sh-label{color:#8a7a60}
+    .theme-light .sh-arrow::before{background:#8a7a60}
+    .theme-light .sh-arrow::after{border-color:#8a7a60}
+    .sh-icon-btn{line-height:0;padding:4px}
+    .theme-light #theme-icon{transform:rotate(180deg)}
+
+    /* SVG overrides — search autocomplete */
+    .theme-light .sb-bar{fill:#ede8e0;stroke:#c0b8a8}
+    .theme-light .sb-text{fill:#7a6a50}
+    .theme-light .sb-cur{fill:#9a8a6a}
+    .theme-light .sb-drop{fill:#f4f0e8;stroke:#d0c8b8}
+    .theme-light .sb-item{fill:#8a7a5a}
+    .theme-light .sb-bold{fill:#5a4a32}
+    .theme-light .sb-icon{stroke:#a09070}
+    .theme-light .sb-div{stroke:#d0c8b8}
+
+    /* SVG overrides — Smart Reply */
+    .theme-light .sr-pill{fill:#ede8e0;stroke:#c0b8a8}
+    .theme-light .sr-text{fill:#8a7a60}
+
+    /* SVG overrides — Smart Compose */
+    .theme-light .sc-user{fill:#7a6a50}
+    .theme-light .sc-ghost{fill:#b8ae9a}
+    .theme-light .sc-cur{fill:#9a8a6a}
+    .theme-light .sc-line{stroke:#d0c8b8}
+    .theme-light .sc-hint{fill:#b8ae9a}
+
+    /* SVG overrides — Copilot */
+    .theme-light .co-bg{fill:#e4e0d8}
+    .theme-light .co-ln{fill:#b0a890}
+    .theme-light .co-kw{fill:#5a8080}
+    .theme-light .co-fn{fill:#7a7a62}
+    .theme-light .co-pt{fill:#8a8870}
+    .theme-light .co-cm{fill:#9a9880}
+    .theme-light .co-ghost{fill:#7aa098}
+    .theme-light .co-gbg{fill:#c8dcd8}
+
+    /* SVG overrides — ChatGPT */
+    .theme-light .ch-ub{fill:#dedad0}
+    .theme-light .ch-ab{fill:#f0ece4;stroke:#c8bfaa}
+    .theme-light .ch-ut{fill:#8a7a5a}
+    .theme-light .ch-at{fill:#5a5040}
+    .theme-light .ch-cur{fill:#c0b8a0}
+
+    /* SVG overrides — Novel */
+    .theme-light    .note-tail{stroke-linecap:round}
+
+    /* Live Portrait Extra */
+    #lp-cursor {
+      position:fixed;width:6px;height:6px;border-radius:50%;background:rgba(160,128,80,0.6);
+      pointer-events:none;z-index:100;transform:translate(-50%,-50%);
+      transition:transform.05s,background.3s,opacity.3s;
+      opacity: 0;
+    }
+    #lp-cursor.active { opacity: 1; }
+    #lp-cursor.fell { background:rgba(200,80,60,0.5); }
+    .theme-light #lp-cursor { background:rgba(138,122,96,0.6); }
+    .theme-light #lp-cursor.fell { background:rgba(160,60,40,0.5); }
+    
+    #lp-hint {
+      position:absolute;bottom:calc(max(16px, 4vh));left:50%;transform:translateX(-50%);
+      font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;
+      text-transform:uppercase;color:#887860;transition:color .6s,opacity 1s;
+      z-index:20;text-align:center;line-height:1.9;pointer-events:none;
+      background:rgba(14,12,9,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      padding:4px 16px;border-radius:20px;
+    }
+    .theme-light #lp-hint { color:#8a7a60; background:rgba(253,251,247,0.7); }
+    .theme-light .nl-pg{stroke:#c0b8a8}
+    .theme-light .nl-ch{fill:#5a4a30}
+    .theme-light .nl-line{fill:#6a5a40}
+
+    /* SVG overrides — Piano animations (era-spec) */
+    .theme-light .pk-white{fill:#e8e2d4!important;stroke:#c8bfaa}
+    .theme-light .pk-black{fill:#1a1410!important;stroke:#0e0c08}
+    .theme-light .pk-note{fill:#9a8a6a}
+    .theme-light .pk-pressed.pk-white{fill:#d4ccbc!important}
+    .theme-light .pk-pressed.pk-black{fill:#2a2018!important}
+    .theme-light .pn-white{fill:#e8e2d4!important;stroke:#c8bfaa}
+    .theme-light .pn-black{fill:#1a1410!important;stroke:#0e0c08}
+    .theme-light .pn-word{fill:#9a8a6a}
+    .theme-light .pn-bw{fill:#5a4a2e}
+    .theme-light .pn-pressed.pn-white{fill:#d4ccbc!important}
+
+    /* SVG overrides — Typewriter row 2 (inline styles need class override) */
+    .theme-light .tw-key2{fill:#ede8e0!important;stroke:#c0b8a8!important}
+    .theme-light .tw-lab2{fill:#9a8a6a!important}
+
+    /* SVG Light Theme Overrides */
+    .theme-light .era-early .tw-shadow{fill:#d6cebf}
+    .theme-light .era-early .tw-face{fill:#fbfaf6;stroke:#c8bfae}
+    .theme-light .era-early .tw-label{fill:#8a7a60}
+    .theme-light .era-mid .t9-bg{fill:#dfddd5}
+    .theme-light .era-mid .t9-key{fill:#f4f2eb}
+    .theme-light .era-mid .t9-text{fill:#8a7a60}
+    .theme-light .era-mid .t9-num{fill:#5a4a30}
+    .theme-light .era-spec .ch-bg{fill:#edebe4;stroke:#d8d6ce}
+
+    @media(max-width:600px){.moment.has-visual{grid-template-rows:48% 52%}}
+
+    /* In-app browser overlay */
+    #iab-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,2,2,0.96);flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;font-family:'Space Mono','Courier New',monospace}
+    #iab-overlay.show{display:flex}
+    #iab-overlay h2{font-family:'IM Fell English',Georgia,serif;font-style:italic;font-size:22px;color:#f0e8d8;margin-bottom:16px;font-weight:normal}
+    #iab-overlay p{font-size:11px;color:#8a7a60;letter-spacing:.1em;line-height:1.9;max-width:320px;margin-bottom:24px}
+    #iab-copy-btn{font-family:'Space Mono','Courier New',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:transparent;border:1px solid #5a4a30;color:#a08050;padding:12px 24px;cursor:pointer;transition:all .3s ease}
+    #iab-copy-btn:hover{border-color:#a08050;color:#d0b070}
+  </style>
+  <script src="dostoevsky-b64.js"></script>
+</head>
+<body class="theme-light">
+<div id="progress"><div id="progress-fill"></div></div>
+<div id="scroll-hint"><span class="sh-label">Scroll</span><span class="sh-arrow"></span></div>
+
+<!-- In-app browser warning -->
+<div id="iab-overlay">
+  <h2>Open in your browser</h2>
+  <p>This experience requires a full browser to generate and download your artifact. Tap below to copy the link, then paste it in Safari or Chrome.</p>
+  <button id="iab-copy-btn">Copy Link</button>
+</div>
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  if (/FBAN|FBAV|Instagram|Twitter|LinkedInApp|Line\/|Snapchat|MicroMessenger/i.test(ua)) {
+    document.getElementById('iab-overlay').classList.add('show');
+    document.getElementById('iab-copy-btn').addEventListener('click', function(){
+      navigator.clipboard.writeText(window.location.href).then(function(){
+        document.getElementById('iab-copy-btn').textContent = 'Copied \u2713';
+        setTimeout(function(){ document.getElementById('iab-copy-btn').textContent = 'Copy Link'; }, 2000);
+      });
+    });
+  }
+})();
+
+// Theme toggle — handled by the listener at the bottom of the page
+</script>
+
+<!-- 0 PROPHECY -->
+<section class="moment era-prophecy" id="s-prophecy">
+  <canvas id="lp-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:all;z-index:2;display:block"></canvas>
+  <div id="lp-hint">move cursor to disturb · click to release</div>
+  <div id="lp-cursor"></div>
+  <div class="site-header" style="pointer-events:none">
+    <div style="flex:1; pointer-events:auto">
+      <span class="sh-title">Piano Key</span>
+    </div>
+    <div class="sh-controls" style="flex:1; justify-content:flex-end; pointer-events:auto">
+      <button id="btn-theme" class="sh-btn sh-icon-btn" aria-label="Toggle theme">
+        <svg id="theme-icon" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" style="display:block;transition:transform .5s ease">
+          <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1"/>
+          <path d="M6.5 1 A5.5 5.5 0 0 0 6.5 12 Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <a href="https://averylakeofficial.com/" target="_blank" rel="noopener" class="sh-artist">Avery Lake</a>
+    </div>
+  </div>
+  <div class="moment-inner">
+    <div class="year">1864</div>
+    <div class="headline">"the whole meaning of human life consists of simply proving to oneself every minute that one's a man and not a piano key."</div>
+    <div class="body">— Fyodor Dostoevsky, <em>Notes from Underground</em></div>
+  </div>
+</section>
+
+<!-- 1 TYPEWRITER 1873 -->
+<section class="moment era-early has-visual" id="s-1873">
+  <div class="visual-zone">
+    <svg viewBox="0 0 338 68" width="338" height="68" style="max-width:90vw" role="img" aria-label="Typewriter keys">
+      <style>
+        .tw-shadow{fill:#0c0806}.tw-face{fill:#1e1812;stroke:#4a3828;stroke-width:1}
+        .tw-label{font-family:'Courier New',monospace;font-size:13px;fill:#6a5a40;text-anchor:middle;dominant-baseline:middle}
+        .tw-key2{fill:#1a1610;stroke:#3a2e1e}.tw-lab2{fill:#3a2c1e}
+        #tw-T{animation:key-press 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center top}
+      </style>
+      <g><rect class="tw-shadow" x="3" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="0" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="15" y="19">Q</text></g>
+      <g><rect class="tw-shadow" x="37" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="34" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="49" y="19">W</text></g>
+      <g><rect class="tw-shadow" x="71" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="68" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="83" y="19">E</text></g>
+      <g><rect class="tw-shadow" x="105" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="102" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="117" y="19">R</text></g>
+      <g id="tw-T"><rect class="tw-shadow" x="139" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="136" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="151" y="19">T</text></g>
+      <g><rect class="tw-shadow" x="173" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="170" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="185" y="19">Y</text></g>
+      <g><rect class="tw-shadow" x="207" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="204" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="219" y="19">U</text></g>
+      <g><rect class="tw-shadow" x="241" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="238" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="253" y="19">I</text></g>
+      <g><rect class="tw-shadow" x="275" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="272" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="287" y="19">O</text></g>
+      <g><rect class="tw-shadow" x="309" y="4" width="30" height="36" rx="5"/><rect class="tw-face" x="306" y="0" width="30" height="36" rx="5"/><text class="tw-label" x="321" y="19">P</text></g>
+      <g style="transform:translate(17px,48px)"><rect class="tw-key2" style="stroke-width:1" x="0" y="0" width="30" height="18" rx="4"/><text class="tw-lab2" style="font-family:'Courier New',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle" x="15" y="10">A</text></g>
+      <g style="transform:translate(51px,48px)"><rect class="tw-key2" style="stroke-width:1" x="0" y="0" width="30" height="18" rx="4"/><text class="tw-lab2" style="font-family:'Courier New',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle" x="15" y="10">S</text></g>
+      <g style="transform:translate(85px,48px)"><rect class="tw-key2" style="stroke-width:1" x="0" y="0" width="30" height="18" rx="4"/><text class="tw-lab2" style="font-family:'Courier New',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle" x="15" y="10">D</text></g>
+      <g style="transform:translate(119px,48px)"><rect class="tw-key2" style="stroke-width:1" x="0" y="0" width="30" height="18" rx="4"/><text class="tw-lab2" style="font-family:'Courier New',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle" x="15" y="10">F</text></g>
+      <g style="transform:translate(153px,48px)"><rect class="tw-key2" style="stroke-width:1" x="0" y="0" width="30" height="18" rx="4"/><text class="tw-lab2" style="font-family:'Courier New',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle" x="15" y="10">G</text></g>
+      <g style="transform:translate(187px,48px)"><rect class="tw-key2" style="stroke-width:1" x="0" y="0" width="30" height="18" rx="4"/><text class="tw-lab2" style="font-family:'Courier New',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle" x="15" y="10">H</text></g>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">1873</div>
+    <div class="headline">The typewriter.</div>
+    <div class="body">The QWERTY keyboard is designed to prevent mechanical jams, not to accommodate the human hand. From the beginning, we organize our fingers around the machine's needs.<br><br>We have not stopped since.</div>
+  </div>
+</section>
+
+<!-- 2 T9 1997 -->
+<section class="moment era-mid has-visual" id="s-1997">
+  <div class="visual-zone">
+    <svg viewBox="0 0 192 256" width="160" height="213" style="max-width:60vw" role="img" aria-label="T9 phone keypad">
+      <style>
+        .t9-key{fill:#1c1810;stroke:#3a3020;stroke-width:1}
+        .t9-num{font-family:Georgia,serif;font-size:18px;fill:#5a4a38;text-anchor:middle}
+        .t9-abc{font-family:'Courier New',monospace;font-size:8px;fill:#3a3020;text-anchor:middle;letter-spacing:.1em}
+        .t9-k1{animation:t9-glow 3.6s 0s infinite}.t9-k2{animation:t9-glow 3.6s .3s infinite}
+        .t9-k3{animation:t9-glow 3.6s .6s infinite}.t9-k4{animation:t9-glow 3.6s .9s infinite}
+        .t9-k5{animation:t9-glow 3.6s 1.2s infinite}.t9-k6{animation:t9-glow 3.6s 1.5s infinite}
+        .t9-k7{animation:t9-glow 3.6s 1.8s infinite}.t9-k8{animation:t9-glow 3.6s 2.1s infinite}
+        .t9-k9{animation:t9-glow 3.6s 2.4s infinite}.t9-k10{animation:t9-glow 3.6s 2.7s infinite}
+        .t9-k11{animation:t9-glow 3.6s 3s infinite}.t9-k12{animation:t9-glow 3.6s 3.3s infinite}
+      </style>
+      <g class="t9-k1"><rect class="t9-key" x="0" y="0" width="54" height="52" rx="6"/><text class="t9-num" x="27" y="27">1</text><text class="t9-abc" x="27" y="42">·</text></g>
+      <g class="t9-k2"><rect class="t9-key" x="69" y="0" width="54" height="52" rx="6"/><text class="t9-num" x="96" y="27">2</text><text class="t9-abc" x="96" y="42">abc</text></g>
+      <g class="t9-k3"><rect class="t9-key" x="138" y="0" width="54" height="52" rx="6"/><text class="t9-num" x="165" y="27">3</text><text class="t9-abc" x="165" y="42">def</text></g>
+      <g class="t9-k4"><rect class="t9-key" x="0" y="66" width="54" height="52" rx="6"/><text class="t9-num" x="27" y="93">4</text><text class="t9-abc" x="27" y="108">ghi</text></g>
+      <g class="t9-k5"><rect class="t9-key" x="69" y="66" width="54" height="52" rx="6"/><text class="t9-num" x="96" y="93">5</text><text class="t9-abc" x="96" y="108">jkl</text></g>
+      <g class="t9-k6"><rect class="t9-key" x="138" y="66" width="54" height="52" rx="6"/><text class="t9-num" x="165" y="93">6</text><text class="t9-abc" x="165" y="108">mno</text></g>
+      <g class="t9-k7"><rect class="t9-key" x="0" y="132" width="54" height="52" rx="6"/><text class="t9-num" x="27" y="159">7</text><text class="t9-abc" x="27" y="174">pqrs</text></g>
+      <g class="t9-k8"><rect class="t9-key" x="69" y="132" width="54" height="52" rx="6"/><text class="t9-num" x="96" y="159">8</text><text class="t9-abc" x="96" y="174">tuv</text></g>
+      <g class="t9-k9"><rect class="t9-key" x="138" y="132" width="54" height="52" rx="6"/><text class="t9-num" x="165" y="159">9</text><text class="t9-abc" x="165" y="174">wxyz</text></g>
+      <g class="t9-k10"><rect class="t9-key" x="0" y="198" width="54" height="52" rx="6"/><text class="t9-num" x="27" y="228">*</text></g>
+      <g class="t9-k11"><rect class="t9-key" x="69" y="198" width="54" height="52" rx="6"/><text class="t9-num" x="96" y="225">0</text><text class="t9-abc" x="96" y="242">+</text></g>
+      <g class="t9-k12"><rect class="t9-key" x="138" y="198" width="54" height="52" rx="6"/><text class="t9-num" x="165" y="228">#</text></g>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">1997</div>
+    <div class="headline">T9 predictive text.</div>
+    <div class="body">Nokia phones. The machine guesses your next letter before you press it. Millions accept this without hesitation.<br><br>They call it convenient.</div>
+  </div>
+</section>
+
+<!-- 3 AUTOCOMPLETE 2004 -->
+<section class="moment era-mid has-visual" id="s-2004">
+  <div class="visual-zone">
+    <svg viewBox="0 0 380 164" width="340" height="147" style="max-width:90vw" role="img" aria-label="Search autocomplete">
+      <style>
+        .sb-bar{fill:#1a1814;stroke:#3c3428;stroke-width:1}
+        .sb-text{font-family:'Courier New',monospace;font-size:13px;fill:#8a7a68}
+        .sb-cur{fill:#6a5a48;animation:cursor-blink 1s step-end infinite}
+        .sb-typed{animation:text-reveal 1.8s steps(28,end) .3s both;clip-path:inset(0 100% 0 0)}
+        .sb-drop{fill:#161412;stroke:#2e2820;stroke-width:1}
+        .sb-item{font-family:'Courier New',monospace;font-size:12px;fill:#6a5a48}
+        .sb-bold{font-family:'Courier New',monospace;font-size:12px;fill:#8a7a68}
+        .sb-div{stroke:#2a2418;stroke-width:1}
+        .sd-1{animation:drop-in .4s ease 2.4s both;opacity:0}
+        .sd-2{animation:drop-in .4s ease 2.7s both;opacity:0}
+        .sd-3{animation:drop-in .4s ease 3s both;opacity:0}
+        .sb-icon{fill:none;stroke:#4a3c2c;stroke-width:1.5}
+      </style>
+      <rect class="sb-bar" x="0" y="0" width="380" height="44" rx="22"/>
+      <circle class="sb-icon" cx="22" cy="22" r="8"/>
+      <line class="sb-icon" x1="28" y1="28" x2="36" y2="36"/>
+      <text class="sb-text sb-typed" x="48" y="27">what is the meaning of human</text>
+      <rect class="sb-cur" x="266" y="12" width="2" height="18" rx="1"/>
+      <g class="sd-1"><rect class="sb-drop" x="0" y="50" width="380" height="36" rx="4"/><text x="48" y="73"><tspan class="sb-bold">what is the meaning of </tspan><tspan class="sb-item">human existence</tspan></text></g>
+      <g class="sd-2"><line class="sb-div" x1="48" y1="87" x2="332" y2="87"/><rect class="sb-drop" x="0" y="88" width="380" height="36" rx="4"/><text x="48" y="111"><tspan class="sb-bold">what is the meaning of </tspan><tspan class="sb-item">human nature</tspan></text></g>
+      <g class="sd-3"><line class="sb-div" x1="48" y1="125" x2="332" y2="125"/><rect class="sb-drop" x="0" y="126" width="380" height="36" rx="4"/><text x="48" y="149"><tspan class="sb-bold">what is the meaning of </tspan><tspan class="sb-item">human life</tspan></text></g>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">2004</div>
+    <div class="headline">Google Search autocomplete.</div>
+    <div class="body">Your question is predicted before you finish asking it. Your curiosity, anticipated. You begin to type — and the sentence is already known.</div>
+  </div>
+</section>
+
+<!-- 4 SMART REPLY 2015 -->
+<section class="moment era-mid has-visual" id="s-2015">
+  <div class="visual-zone">
+    <svg viewBox="0 0 360 60" width="340" height="57" style="max-width:90vw" role="img" aria-label="Smart Reply buttons">
+      <style>
+        .sr-pill{fill:#161410;stroke:#3a3020;stroke-width:1}
+        .sr-text{font-family:'Courier New',monospace;font-size:12px;fill:#605848;text-anchor:middle;letter-spacing:.04em}
+        .sr-a1{animation:drop-in .5s ease .2s both;opacity:0}
+        .sr-a2{animation:drop-in .5s ease .5s both;opacity:0}
+        .sr-a3{animation:drop-in .5s ease .8s both;opacity:0}
+        .sr-mid-pill{animation:sr-flash 4s ease-in-out 1.5s infinite}
+        .sr-mid-text{animation:sr-text-flash 4s ease-in-out 1.5s infinite}
+      </style>
+      <g class="sr-a1"><rect class="sr-pill" x="0" y="10" width="108" height="36" rx="18"/><text class="sr-text" x="54" y="33">Sounds good.</text></g>
+      <g class="sr-a2"><rect class="sr-pill sr-mid-pill" x="126" y="10" width="76" height="36" rx="18"/><text class="sr-text sr-mid-text" x="164" y="33">Thanks!</text></g>
+      <g class="sr-a3"><rect class="sr-pill" x="220" y="10" width="80" height="36" rx="18"/><text class="sr-text" x="260" y="33">Will do.</text></g>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">2015</div>
+    <div class="headline">Gmail Smart Reply.</div>
+    <div class="body">Three buttons replace the message you would have written.<br><br>How many of your emails are now one of these three?</div>
+  </div>
+</section>
+
+<!-- 5 SMART COMPOSE 2018 -->
+<section class="moment era-mid has-visual" id="s-2018">
+  <div class="visual-zone">
+    <svg viewBox="0 0 420 80" width="380" height="72" style="max-width:90vw" role="img" aria-label="Smart Compose ghost text">
+      <style>
+        .sc-user{font-family:'Courier New',monospace;font-size:15px;fill:#a09080}
+        .sc-ghost{font-family:'Courier New',monospace;font-size:15px;fill:#4a4030;animation:ghost-in 4s ease-in-out .8s infinite}
+        .sc-cur{fill:#6a5a48;animation:cursor-blink 1s step-end infinite}
+        .sc-line{stroke:#2a2418;stroke-width:1}
+        .sc-reveal{animation:text-reveal 1.2s steps(26,end) .2s both;clip-path:inset(0 100% 0 0)}
+        .sc-hint{font-family:'Courier New',monospace;font-size:10px;fill:#2e2820;animation:ghost-in 4s ease-in-out .8s infinite}
+      </style>
+      <line class="sc-line" x1="0" y1="44" x2="420" y2="44"/>
+      <text class="sc-user sc-reveal" x="0" y="34">I'll be at the meeting by</text>
+      <rect class="sc-cur" x="233" y="16" width="2" height="20" rx="1"/>
+      <text class="sc-ghost" x="240" y="34"> 3pm on Thursday.</text>
+      <text class="sc-hint" x="0" y="64">press Tab to accept</text>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">2018</div>
+    <div class="headline">Gmail Smart Compose.</div>
+    <div class="body">Word by word. The machine finishes your sentences as you type them. You accept the suggestion with a single key. <span class="tab-badge">Tab →</span></div>
+  </div>
+</section>
+
+<!-- 6 COPILOT 2021 -->
+<section class="moment era-tech has-visual" id="s-2021">
+  <div class="visual-zone">
+    <svg viewBox="0 0 420 140" width="380" height="127" style="max-width:90vw" role="img" aria-label="Code editor with Copilot suggestion">
+      <style>
+        .co-bg{fill:#0e0e0c}.co-ln{font-family:'Courier New',monospace;font-size:13px;fill:#2e2e2c;text-anchor:end}
+        .co-kw{font-family:'Courier New',monospace;font-size:13px;fill:#507070}
+        .co-fn{font-family:'Courier New',monospace;font-size:13px;fill:#888070}
+        .co-pt{font-family:'Courier New',monospace;font-size:13px;fill:#4a4840}
+        .co-cm{font-family:'Courier New',monospace;font-size:13px;fill:#404040}
+        .co-ghost{font-family:'Courier New',monospace;font-size:13px;fill:#3c5850;animation:code-ghost 3.8s ease-in-out 1s infinite}
+        .co-gbg{fill:#0e1c18;animation:code-ghost 3.8s ease-in-out 1s infinite}
+      </style>
+      <rect class="co-bg" x="0" y="0" width="420" height="140" rx="6"/>
+      <text class="co-ln" x="28" y="30">1</text><text class="co-ln" x="28" y="54">2</text><text class="co-ln" x="28" y="78">3</text><text class="co-ln" x="28" y="102">4</text><text class="co-ln" x="28" y="126">5</text>
+      <text x="40" y="30"><tspan class="co-kw">function </tspan><tspan class="co-fn">identity</tspan><tspan class="co-pt">(</tspan><tspan class="co-fn">input</tspan><tspan class="co-pt">) {</tspan></text>
+      <text x="40" y="54"><tspan class="co-cm">  // what comes next?</tspan></text>
+      <rect class="co-gbg" x="40" y="62" width="300" height="22" rx="2"/>
+      <text x="50" y="78"><tspan class="co-ghost">  return this.</tspan><tspan class="co-ghost" style="fill:#3a6858">predict</tspan><tspan class="co-ghost">(input);</tspan></text>
+      <text x="40" y="102"><tspan class="co-pt">}</tspan></text>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">2021</div>
+    <div class="headline">GitHub Copilot.</div>
+    <div class="body">The machine writes your code. Developers accept entire functions generated before they have finished thinking them through.<br><br>The programmer becomes the editor. The editor becomes the approver.</div>
+  </div>
+</section>
+
+<!-- 7 CHATGPT 2023 -->
+<section class="moment era-tech has-visual" id="s-2023">
+  <div class="visual-zone">
+    <svg viewBox="0 0 400 160" width="360" height="144" style="max-width:90vw" role="img" aria-label="Chat interface">
+      <style>
+        .ch-ub{fill:#1a1814}.ch-ab{fill:#141210;stroke:#2a2620;stroke-width:1}
+        .ch-ut{font-family:'Courier New',monospace;font-size:12px;fill:#706858;text-anchor:end}
+        .ch-at{font-family:'Courier New',monospace;font-size:12px;fill:#404038}
+        .ch-r1{animation:chat-reveal 2.2s steps(14,end) 1.4s both;clip-path:inset(0 100% 0 0)}
+        .ch-r2{animation:chat-reveal 2.4s steps(26,end) 3.8s both;clip-path:inset(0 100% 0 0)}
+        .ch-r3{animation:chat-reveal 2s steps(22,end) 5.2s both;clip-path:inset(0 100% 0 0)}
+        .ch-cur{fill:#303028;animation:cursor-blink 1s step-end 1.4s infinite}
+      </style>
+      <rect class="ch-ub" x="168" y="0" width="232" height="52" rx="14"/>
+      <text class="ch-ut" x="388" y="22">write me a letter</text>
+      <text class="ch-ut" x="388" y="40">of resignation.</text>
+      <rect class="ch-ab" x="0" y="68" width="320" height="88" rx="14"/>
+      <text x="16" y="96"><tspan class="ch-at ch-r1">Dear [Name],</tspan></text>
+      <text x="16" y="118"><tspan class="ch-at ch-r2">It is with mixed feelings that I</tspan></text>
+      <text x="16" y="140"><tspan class="ch-at ch-r3">write to formally resign...</tspan></text>
+      <rect class="ch-cur" x="16" y="126" width="2" height="14" rx="1"/>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">2023</div>
+    <div class="headline">100 million users. Sixty days.</div>
+    <div class="body">The machine writes your emails. Your essays. Your cover letters, your speeches, your love letters.<br><br>The machine does not know you. It produces you.</div>
+  </div>
+</section>
+
+<!-- 8 THE NOVEL 2024 -->
+<section class="moment era-late has-visual" id="s-2024">
+  <div class="visual-zone">
+    <svg viewBox="0 0 400 180" width="360" height="162" style="max-width:90vw" role="img" aria-label="Machine-generated novel pages">
+      <style>
+        .nl-line{font-family:'Courier New',monospace;font-size:11px;fill:#3a3830}
+        .nl-pg{fill:none;stroke:#252320;stroke-width:1}
+        .nl-ch{font-family:Georgia,serif;font-size:13px;fill:#4a4640;text-anchor:middle;letter-spacing:.08em}
+        .nl-l1{animation:line-appear 5s ease-in-out 0s infinite}.nl-l2{animation:line-appear 5s ease-in-out .3s infinite}
+        .nl-l3{animation:line-appear 5s ease-in-out .6s infinite}.nl-l4{animation:line-appear 5s ease-in-out .9s infinite}
+        .nl-l5{animation:line-appear 5s ease-in-out 1.2s infinite}.nl-l6{animation:line-appear 5s ease-in-out 1.5s infinite}
+        .nl-l7{animation:line-appear 5s ease-in-out 1.8s infinite}.nl-l8{animation:line-appear 5s ease-in-out 2.1s infinite}
+      </style>
+      <rect class="nl-pg" x="0" y="0" width="400" height="180" rx="4"/>
+      <text class="nl-ch" x="200" y="24">Chapter I</text>
+      <line x1="60" y1="32" x2="340" y2="32" stroke="#252320" stroke-width=".5"/>
+      <text class="nl-line nl-l1" x="24" y="52">It was in the nature of the machine to know what came</text>
+      <text class="nl-line nl-l2" x="24" y="68">next, for it had read everything. Every novel, every</text>
+      <text class="nl-line nl-l3" x="24" y="84">confession, every letter written in grief or in joy —</text>
+      <text class="nl-line nl-l4" x="24" y="100">all of it lived inside the model now, flattened into</text>
+      <text class="nl-line nl-l5" x="24" y="116">weights and probabilities. The man opened the program.</text>
+      <text class="nl-line nl-l6" x="24" y="132">He typed: "write me something human." The machine</text>
+      <text class="nl-line nl-l7" x="24" y="148">complied. He could not tell the difference. He was</text>
+      <text class="nl-line nl-l8" x="24" y="164">not sure this was a problem.</text>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">2024</div>
+    <div class="headline">The machine writes the novel.</div>
+    <div class="body">Full books. Screenplays. Academic papers. From a prompt.<br><br>It has read more Dostoevsky than Dostoevsky ever could. It writes new Dostoevsky, on demand, in his style. Better, some say, than the later work.</div>
+  </div>
+</section>
+
+<!-- 9 SOON — piano plays itself -->
+<section class="moment era-spec has-visual" id="s-soon">
+  <div class="visual-zone">
+    <svg id="piano-soon" viewBox="0 0 376 134" width="376" height="134" style="max-width:90vw" role="img" aria-label="Piano keyboard playing itself">
+      <style>
+        .pk-white{fill:#181410;stroke:#2e2820;stroke-width:1;transition:transform .12s ease,fill .12s ease;transform-box:fill-box;transform-origin:top center}
+        .pk-black{fill:#0e0c08;stroke:#201c16;stroke-width:1;transition:transform .12s ease,fill .12s ease;transform-box:fill-box;transform-origin:top center}
+        .pk-note{font-family:'Courier New',monospace;font-size:9px;fill:#2a2420;text-anchor:middle}
+        .pk-pressed{transform:translateY(7px)!important}
+        .pk-pressed.pk-white{fill:#201c18!important}
+        .pk-pressed.pk-black{fill:#141210!important}
+      </style>
+      <rect class="pk-white" id="pk-w0" x="0"   y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w1" x="47"  y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w2" x="94"  y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w3" x="141" y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w4" x="188" y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w5" x="235" y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w6" x="282" y="0" width="44" height="130" rx="3"/>
+      <rect class="pk-white" id="pk-w7" x="329" y="0" width="44" height="130" rx="3"/>
+      <text class="pk-note" x="22"  y="122">C</text><text class="pk-note" x="69"  y="122">D</text>
+      <text class="pk-note" x="116" y="122">E</text><text class="pk-note" x="163" y="122">F</text>
+      <text class="pk-note" x="210" y="122">G</text><text class="pk-note" x="257" y="122">A</text>
+      <text class="pk-note" x="304" y="122">B</text><text class="pk-note" x="351" y="122">C</text>
+      <rect class="pk-black" id="pk-b0" x="31"  y="0" width="28" height="82" rx="2"/>
+      <rect class="pk-black" id="pk-b1" x="78"  y="0" width="28" height="82" rx="2"/>
+      <rect class="pk-black" id="pk-b2" x="172" y="0" width="28" height="82" rx="2"/>
+      <rect class="pk-black" id="pk-b3" x="219" y="0" width="28" height="82" rx="2"/>
+      <rect class="pk-black" id="pk-b4" x="266" y="0" width="28" height="82" rx="2"/>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">soon</div>
+    <div class="headline">The machine no longer needs the prompt.</div>
+    <div class="body">It generates its own questions. Answers them. Evaluates the answers. Improves on them.<br><br>The piano plays itself.</div>
+  </div>
+</section>
+
+<!-- 10 NEXT — word piano -->
+<section class="moment era-spec has-visual" id="s-next">
+  <div class="visual-zone">
+    <svg id="piano-next" viewBox="0 0 376 134" width="376" height="134" style="max-width:90vw" role="img" aria-label="Piano with words instead of notes">
+      <style>
+        .pn-white{fill:#141210;stroke:#262018;stroke-width:1;transition:transform .12s ease,fill .12s ease;transform-box:fill-box;transform-origin:top center}
+        .pn-black{fill:#0c0a08;stroke:#1a1810;stroke-width:1;transition:transform .12s ease;transform-box:fill-box;transform-origin:top center}
+        .pn-word{font-family:'Courier New',monospace;font-size:7px;fill:#2a2820;text-anchor:middle;letter-spacing:.04em;text-transform:uppercase}
+        .pn-bw{font-family:'Courier New',monospace;font-size:6px;fill:#1c1a18;text-anchor:middle;letter-spacing:.03em;text-transform:uppercase}
+        .pn-pressed{transform:translateY(7px)!important}
+        .pn-pressed.pn-white{fill:#1e1c18!important}
+      </style>
+      <rect class="pn-white" id="pn-w0" x="0"   y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w1" x="47"  y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w2" x="94"  y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w3" x="141" y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w4" x="188" y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w5" x="235" y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w6" x="282" y="0" width="44" height="130" rx="3"/>
+      <rect class="pn-white" id="pn-w7" x="329" y="0" width="44" height="130" rx="3"/>
+      <text class="pn-word" x="22"  y="114">KNOW</text><text class="pn-word" x="69"  y="114">MEAN</text>
+      <text class="pn-word" x="116" y="114">FEEL</text><text class="pn-word" x="163" y="110">CHOOSE</text>
+      <text class="pn-word" x="210" y="110">REFUSE</text><text class="pn-word" x="257" y="114">THINK</text>
+      <text class="pn-word" x="304" y="114">SPEAK</text><text class="pn-word" x="351" y="114">BE</text>
+      <rect class="pn-black" id="pn-b0" x="31"  y="0" width="28" height="82" rx="2"/>
+      <rect class="pn-black" id="pn-b1" x="78"  y="0" width="28" height="82" rx="2"/>
+      <rect class="pn-black" id="pn-b2" x="172" y="0" width="28" height="82" rx="2"/>
+      <rect class="pn-black" id="pn-b3" x="219" y="0" width="28" height="82" rx="2"/>
+      <rect class="pn-black" id="pn-b4" x="266" y="0" width="28" height="82" rx="2"/>
+      <text class="pn-bw" x="45" y="50">PREDICT</text>
+      <text class="pn-bw" x="92" y="50">ABSORB</text>
+      <text class="pn-bw" x="186" y="46">COM-</text><text class="pn-bw" x="186" y="56">PLETE</text>
+      <text class="pn-bw" x="233" y="46">GEN-</text><text class="pn-bw" x="233" y="56">ERATE</text>
+      <text class="pn-bw" x="280" y="50">REPLACE</text>
+    </svg>
+  </div>
+  <div class="moment-inner">
+    <div class="year">next</div>
+    <div class="headline">The machine reads what it generated.<br>Learns from its own outputs.</div>
+    <div class="body">The refusal is in the training data.<br><br>"I am not a piano key" is something the system now says fluently, on request, in any style, without understanding what it means to refuse.</div>
+  </div>
+</section>
+
+<!-- 11 VOID -->
+<section class="moment era-void" id="s-void">
+  <div class="moment-inner">
+    <div class="year">2026</div>
+    <div class="headline">You are here.</div>
+    <div class="body"><span class="void-cursor"></span></div>
+  </div>
+</section>
+
+<!-- 12 HUMAN SIGNAL -->
+<section class="moment era-signal" id="s-signal">
+  <div class="moment-inner">
+    <div id="signal-prompt">Write something.</div>
+    <textarea id="signal-input" rows="4" maxlength="80" placeholder="—" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Write something"></textarea>
+      <div id="char-count" style="font-family:'Space Mono','Courier New',monospace;font-size:9px;letter-spacing:.16em;color:#3a3020;text-align:right;margin-top:6px;transition:color .3s ease">0 / 80</div>
+    <div id="signal-artifact-ui">
+      <div id="signal-name-row">
+        <input type="text" id="signal-name" placeholder="Your name (optional)" autocomplete="off" spellcheck="false" aria-label="Your name">
+      </div>
+      <div id="signal-actions">
+        <button class="signal-btn" id="btn-artifact">Download Artifact</button>
+        <button class="signal-btn" id="btn-typo">Download Typographic Portrait</button>
+        <button class="signal-btn" id="btn-play">Play Melody</button>
+        <button class="signal-btn" id="btn-midi">Download MIDI</button>
+        <button class="signal-btn" id="btn-log">Download Signal Log</button>
+      </div>
+      <div id="signal-order-row">
+        <a class="signal-btn" id="btn-order" href="#">Order Signed Print</a>
+        <div id="order-hint"></div>
+      </div>
+      <div id="signal-protocol">Piano Key &nbsp;·&nbsp; Protocol Piano Key &nbsp;·&nbsp; Human Signal Captured</div>
+    </div>
+    <div id="signal-byline">Piano Key &nbsp;·&nbsp; Avery Lake, 2026<br>After Dostoevsky, <em style="font-family:'IM Fell English',serif;text-transform:none;letter-spacing:0">Notes from Underground</em>, 1864</div>
+  </div>
+</section>
+
+<script>
+'use strict';
+// Activate sections
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.4 });
+document.querySelectorAll('.moment').forEach(m => obs.observe(m));
+
+// Progress bar
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  fill.style.height = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+}, { passive: true });
+
+// Piano animation factory
+function makePiano(svgId, wPfx, bPfx, speed, pressedClass) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const whites = Array.from({length:8}, (_,i) => document.getElementById(wPfx+i));
+  let idx = 0, timer = null, active = null;
+  function step() {
+    if (active) { active.classList.remove(pressedClass); active = null; }
+    const k = whites[idx];
+    if (k) { k.classList.add(pressedClass); active = k; }
+    idx++;
+    if (idx >= whites.length) {
+      idx = 0;
+      clearInterval(timer);
+      setTimeout(() => { if (timer !== null) timer = setInterval(step, speed); }, 700);
+    }
+  }
+  const sObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      if (timer === null) { timer = 0; timer = setInterval(step, speed); }
+    } else {
+      clearInterval(timer); timer = null;
+      if (active) { active.classList.remove(pressedClass); active = null; }
+      idx = 0;
+    }
+  }, { threshold: 0.5 });
+  sObs.observe(svg.closest('.moment'));
+}
+makePiano('piano-soon', 'pk-w', 'pk-b', 340, 'pk-pressed');
+makePiano('piano-next', 'pn-w', 'pn-b', 500, 'pn-pressed');
+
+// Scroll hint
+const scrollHint = document.getElementById('scroll-hint');
+setTimeout(() => scrollHint.classList.add('show'), 1600);
+window.addEventListener('scroll', () => {
+  scrollHint.classList.add('gone');
+  scrollHint.classList.remove('show');
+}, { passive: true, once: true });
+
+// Signal
+const sigSec  = document.getElementById('s-signal');
+const sigIn   = document.getElementById('signal-input');
+const sigBy   = document.getElementById('signal-byline');
+const sigArt  = document.getElementById('signal-artifact-ui');
+let hasTyped = false, byT = null;
+
+new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    setTimeout(() => sigArt.classList.add('show'), 800);
+    setTimeout(() => sigIn.focus(), 900);
+  }
+}, { threshold: 0.6 }).observe(sigSec);
+
+const charCount = document.getElementById('char-count');
+sigIn.addEventListener('input', () => {
+  hasTyped = true;
+  clearTimeout(byT);
+  sigBy.classList.remove('show');
+  byT = setTimeout(() => { if (hasTyped) sigBy.classList.add('show'); }, 6000);
+  // Character counter
+  const n = sigIn.value.length;
+  if (charCount) {
+    charCount.textContent = n + ' / 80';
+    charCount.style.color = n >= 72 ? 'rgba(160,90,50,0.8)' : '';
+  }
+});
+
+// Order print — gate behind both downloads
+let artifactDownloaded = false, logDownloaded = false, lastHash = '';
+const orderBtn  = document.getElementById('btn-order');
+const orderHint = document.getElementById('order-hint');
+let hintTimer = null;
+
+function tryActivateOrder() {
+  if (!artifactDownloaded || !logDownloaded) return;
+  const name = document.getElementById('signal-name').value.trim();
+  const subj = encodeURIComponent('Piano Key \u2014 Signed Print' + (lastHash ? ' \u00B7 #' + lastHash : ''));
+  const body = encodeURIComponent(
+    'Hello,\n\n'
+    + 'I would like to order a signed print of my Piano Key human signal.\n\n'
+    + 'Please find my artifact (piano-key-signal.png) and data log (piano-key-signal-log.txt) attached to this email.\n\n'
+    + 'Signal ID: #' + (lastHash || 'N/A') + '\n'
+    + (name ? 'Name: ' + name + '\n' : '')
+    + '\nThank you'
+  );
+  orderBtn.href = 'mailto:hello@averylakeofficial.com?subject=' + subj + '&body=' + body;
+  orderBtn.classList.add('ready');
+  orderHint.classList.remove('show');
+}
+
+orderBtn.addEventListener('click', function(e) {
+  if (artifactDownloaded && logDownloaded) return; // let mailto proceed
+  e.preventDefault();
+  clearTimeout(hintTimer);
+  const needArt = !artifactDownloaded, needLog = !logDownloaded;
+  if (needArt && needLog) {
+    orderHint.textContent = 'Please download the artifact and data log first.';
+  } else if (needArt) {
+    orderHint.textContent = 'Please download the artifact first.';
+  } else {
+    orderHint.textContent = 'Please download the data log first.';
+  }
+  orderHint.classList.add('show');
+  hintTimer = setTimeout(() => orderHint.classList.remove('show'), 4000);
+});
+
+// Canvas artifact generation
+function signalHash(text, ts) {
+  const str = ts + '\x00' + text;
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
+function wrapCanvasText(ctx, text, maxWidth) {
+  const paragraphs = text.split(/\n+/);
+  const lines = [];
+  for (const para of paragraphs) {
+    if (!para.trim()) { lines.push(''); continue; }
+    const words = para.split(' ');
+    let current = '';
+    for (const word of words) {
+      const test = current ? current + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && current) {
+        lines.push(current);
+        current = word;
+      } else { current = test; }
+    }
+    if (current) lines.push(current);
+  }
+  return lines;
+}
+
+async function buildArtifactCanvas(skipPortrait) {
+  await document.fonts.ready;
+  const text = sigIn.value.trim() || '\u2014';
+  const name = document.getElementById('signal-name').value.trim();
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const ts = now.getUTCFullYear() + '-' + pad(now.getUTCMonth()+1) + '-' + pad(now.getUTCDate())
+           + ' ' + pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds()) + ' UTC';
+  const hash = signalHash(text, ts);
+  lastHash = hash;
+
+  const S = 3; // 3× for print quality
+  const W = 900*S, H = 1200*S, PAD = 80*S, MARGIN = 48*S;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Palette: ivory/ebony — the material of a piano key
+  const isLight = true;
+  const pal = {
+    bgInner:     '#f4efe6',
+    bgRadialOut: 'rgba(210,200,185,0)',
+    bgRadialIn:  'rgba(185,172,155,0.10)',
+    gridLine:    'rgba(38,26,12,0.05)',
+    gridOct:     'rgba(38,26,12,0.20)',
+    thread:      'rgba(26,16,6,0.28)',
+    threadCap:   'rgba(26,16,6,0.58)',
+    dotGlow:     'rgba(16,8,2,0.60)',
+    dotCore:     '#0c0a06',
+    kbBlack:     '#0c0a06',
+    kbWhite:     '#e8e2d4',
+    kbBlackHover:'#2a1e0e',
+    textMain:    '#28200e',
+    textMuted:   '#78685a'
+  };
+
+  // Background
+  ctx.fillStyle = pal.bgInner;
+  ctx.fillRect(0, 0, W, H);
+  ctx.save();
+
+  // Radial warmth centred on score area
+  const grd = ctx.createRadialGradient(W/2, H*0.50, 0, W/2, H*0.50, W*0.75);
+  grd.addColorStop(0, pal.bgRadialIn);
+  grd.addColorStop(1, pal.bgRadialOut);
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+
+
+  // Ghost portrait — Dostoevsky as palimpsest
+  if (!skipPortrait) {
+    try {
+      const portrait = new Image();
+      portrait.src = DOST_IMG_B64;
+      await new Promise((res, rej) => { portrait.onload = res; portrait.onerror = rej; });
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, W, H);
+      ctx.clip();
+      ctx.globalAlpha = 0.08;
+      ctx.filter = 'grayscale(1) brightness(0.7) contrast(1.1)';
+      const ia = portrait.naturalWidth / portrait.naturalHeight;
+      const ca = W / H;
+      let dw, dh, dx, dy;
+      if (ia > ca) { dh = H; dw = dh * ia; dx = (W - dw) / 2; dy = 0; }
+      else         { dw = W; dh = dw / ia; dx = 0; dy = (H - dh) / 2; }
+      ctx.drawImage(portrait, dx, dy, dw, dh);
+      ctx.filter = 'none';
+      ctx.restore();
+    } catch(e) { /* graceful fail */ }
+  }
+
+  // Layout
+  const FOOT = 88*S;
+
+  const GAP  = 18*S;
+  const rX      = PAD;
+  const rW      = W - PAD*2;
+  const TITLE_H = 88*S;
+  const rTop    = PAD + TITLE_H;
+  const rBot    = H - FOOT - GAP;
+  const rH      = rBot - rTop;
+
+  // Score title block
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = pal.textMain;
+  ctx.font = `italic ${14*S}px "IM Fell English", Georgia, serif`;
+  ctx.letterSpacing = '0.04em';
+  ctx.fillText('Piano Key', W/2, PAD + 38*S);
+  if (name) {
+    ctx.font = `${5.5*S}px "Space Mono", "Courier New", monospace`;
+    ctx.fillStyle = pal.textMuted;
+    ctx.letterSpacing = '0.20em';
+    ctx.fillText(name.toUpperCase(), W/2, PAD + 58*S);
+  }
+  ctx.strokeStyle = 'rgba(38,26,12,0.18)';
+  ctx.lineWidth = 0.5*S;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 90*S, PAD + 70*S);
+  ctx.lineTo(W/2 + 90*S, PAD + 70*S);
+  ctx.stroke();
+
+  // ── MUSICAL SCORE ────────────────────────────────────────────────────────
+  // Each letter maps to an ascending diatonic note starting at C4 (middle C):
+  //   A=C4  B=D4  C=E4  D=F4  E=G4  F=A4  G=B4
+  //   H=C5  I=D5  J=E5  K=F5  L=G5  M=A5  N=B5
+  //   O=C6  P=D6  Q=E6  R=F6  S=G6  T=A6  U=B6
+  //   V=C7  W=D7  X=E7  Y=F7  Z=G7
+  // Spaces become quarter rests. Score uses treble clef notation.
+
+  const _dST = [0,2,4,5,7,9,11]; // semitone offsets: C D E F G A B
+  function letterToMidi(ch) {
+    const c = ch.toUpperCase();
+    if (c < 'A' || c > 'Z') return null;
+    const idx = c.charCodeAt(0) - 65;
+    return 60 + Math.floor(idx/7)*12 + _dST[idx%7];
+  }
+  function isBk(k) { return [1,4,6,9,11].includes(k%12); }
+
+  // Staff step: 0 = E4 (bottom line of treble clef)
+  // Lines at steps 0,2,4,6,8 — spaces at 1,3,5,7 — ledger lines below at -2,-4
+  const _c2d = [0,0,1,1,2,3,3,4,4,5,5,6]; // chromatic→diatonic in octave
+  function midiToStaffStep(midi) {
+    const oct = Math.floor(midi/12) - 1;
+    const abs = oct*7 + _c2d[((midi%12)+12)%12];
+    return abs - 30; // 30 = E4 absolute diatonic (octave 4 × 7 + 2)
+  }
+
+  // Parse text into note events — every character is one beat
+  const noteEvents = text.split('').map((ch, i) => {
+    if (/\s/.test(ch)) return { isRest:true, idx:i };
+    const midi = letterToMidi(ch);
+    if (midi === null) return { isRest:true, idx:i };
+    return { isRest:false, idx:i, ch:ch.toUpperCase(), key:midi-21, midi, staffStep:midiToStaffStep(midi) };
+  });
+
+  const kFreq = {};
+  for (const n of noteEvents) if (!n.isRest) kFreq[n.key] = (kFreq[n.key]||0)+1;
+  const mxF = Math.max(...Object.values(kFreq), 1);
+
+  // Layout
+  const staffSp    = 7*S;          // pixels between adjacent staff lines
+  const sysH       = 4 * staffSp;  // top-line to bottom-line height per system
+  const sysGap     = 82*S;         // vertical space between systems — generous for ledger lines above
+  const clefW      = 46*S;         // left margin: clef + time signature
+  const maxSys     = Math.max(1, Math.floor((rH - sysGap*0.5) / (sysH + sysGap)));
+  const targetPSys = 12;           // target events per system for comfortable spacing
+  const nSystems   = Math.max(1, Math.min(maxSys, Math.ceil(noteEvents.length / targetPSys)));
+  const evtPerSys  = Math.ceil(noteEvents.length / nSystems);
+  // Beat value per event: half note (vowel) = 2, quarter note (consonant) = 1, rest = 1
+  const beatOf = ev => ev.isRest ? 1 : (['A','E','I','O','U'].includes(ev.ch) ? 2 : 1);
+
+  // Pre-load treble clef via SVG + Unicode (most reliable cross-browser approach)
+  const _clefImg = await new Promise(res => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 200"><text y="188" font-size="200" font-family="serif" fill="rgba(38,26,12,0.52)">&#x1D11E;</text></svg>`;
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = () => res(null);
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    setTimeout(() => res(img), 800);
+  });
+
+  for (let s = 0; s < nSystems; s++) {
+    const sysTop  = rTop + sysGap*0.5 + s * (sysH + sysGap);
+    const botLine = sysTop + sysH;
+    const sysX    = rX + clefW;
+    const sysW    = rW - clefW;
+
+    // ── Staff lines ───────────────────────────────────────────────────────
+    ctx.strokeStyle = 'rgba(38,26,12,0.28)';
+    ctx.lineWidth   = 0.55*S;
+    for (let l = 0; l < 5; l++) {
+      const ly = sysTop + l * staffSp;
+      ctx.beginPath();
+      ctx.moveTo(rX, ly);
+      ctx.lineTo(sysX + sysW, ly);
+      ctx.stroke();
+    }
+
+    // ── Left barline ──────────────────────────────────────────────────────
+    ctx.strokeStyle = 'rgba(38,26,12,0.45)';
+    ctx.lineWidth   = 1.2*S;
+    ctx.beginPath();
+    ctx.moveTo(sysX, sysTop);
+    ctx.lineTo(sysX, botLine);
+    ctx.stroke();
+
+    // ── Treble clef ───────────────────────────────────────────────────────
+    const gLineY = botLine - staffSp; // G4 line = 2nd line from bottom
+    if (_clefImg && _clefImg.naturalWidth > 0) {
+      const clefH  = sysH * 2.6;
+      const clefW2 = Math.round(clefH * 0.32);
+      ctx.drawImage(_clefImg, rX, gLineY - clefH * 0.62, clefW2, clefH);
+    } else {
+      // Canvas-text fallback
+      ctx.save();
+      ctx.font = `${sysH * 2.5}px serif`;
+      ctx.fillStyle = 'rgba(38,26,12,0.52)';
+      ctx.textBaseline = 'bottom';
+      ctx.textAlign    = 'left';
+      ctx.fillText('\u{1D11E}', rX, botLine + sysH * 0.64);
+      ctx.restore();
+    }
+
+    // ── Time signature 4/4 (first system only) ────────────────────────────
+    if (s === 0) {
+      const tsX = rX + 32*S;
+      ctx.fillStyle  = 'rgba(38,26,12,0.68)';
+      ctx.font       = `bold ${Math.round(staffSp * 1.88)}px Georgia, "Times New Roman", serif`;
+      ctx.textAlign  = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('4', tsX, sysTop + staffSp * 1.0); // upper digit
+      ctx.fillText('4', tsX, sysTop + staffSp * 3.0); // lower digit
+    }
+
+    // ── Per-system beat layout ─────────────────────────────────────────────
+    const evtStart   = s * evtPerSys;
+    const evtEnd     = Math.min(evtStart + evtPerSys, noteEvents.length);
+    const noteR      = staffSp * 0.32;
+    const sysEvts    = noteEvents.slice(evtStart, evtEnd);
+    const totalBeats = Math.max(sysEvts.reduce((acc, e) => acc + beatOf(e), 0), 1);
+
+    // ── Internal barlines (every 4 beats) ─────────────────────────────────
+    {
+      let cumB = 0;
+      for (const ev of sysEvts) {
+        if (cumB > 0 && cumB % 4 === 0) {
+          const blx = sysX + (cumB / totalBeats) * sysW;
+          ctx.strokeStyle = 'rgba(38,26,12,0.28)';
+          ctx.lineWidth   = 0.65*S;
+          ctx.beginPath();
+          ctx.moveTo(blx, sysTop);
+          ctx.lineTo(blx, botLine);
+          ctx.stroke();
+        }
+        cumB += beatOf(ev);
+      }
+    }
+
+    // ── Notes & rests — proportional (beat-based) spacing ─────────────────
+    let cumBeats = 0;
+    for (let ei = evtStart; ei < evtEnd; ei++) {
+      const ev = noteEvents[ei];
+      const bv = beatOf(ev);
+      // Centre note within its beat duration
+      const nx = sysX + ((cumBeats + bv * 0.5) / totalBeats) * sysW;
+      cumBeats += bv;
+
+      if (ev.isRest) {
+        // Quarter rest — z-shaped squiggle centred at mid-staff
+        const ry  = botLine - 4 * (staffSp / 2);
+        const rh  = staffSp * 0.9;
+        ctx.strokeStyle = 'rgba(38,26,12,0.28)';
+        ctx.lineWidth   = 0.9*S;
+        ctx.lineCap     = 'round';
+        ctx.beginPath();
+        ctx.moveTo(nx - 2.2*S, ry - rh*0.5);
+        ctx.lineTo(nx + 2.2*S, ry - rh*0.18);
+        ctx.lineTo(nx - 2.2*S, ry + rh*0.18);
+        ctx.lineTo(nx + 2.2*S, ry + rh*0.5);
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+        continue;
+      }
+
+      const step = ev.staffStep;
+      const ny   = botLine - step * (staffSp / 2);
+
+      // Ledger lines — below staff (step ≤ -2) and above (step ≥ 10)
+      ctx.strokeStyle = 'rgba(38,26,12,0.42)';
+      ctx.lineWidth   = 0.7*S;
+      const lw = noteR * 3.6;
+      for (let ls = -2; ls >= step; ls -= 2) {
+        const ly = botLine - ls * (staffSp/2);
+        ctx.beginPath(); ctx.moveTo(nx - lw/2, ly); ctx.lineTo(nx + lw/2, ly); ctx.stroke();
+      }
+      for (let ls = 10; ls <= step; ls += 2) {
+        const ly = botLine - ls * (staffSp/2);
+        ctx.beginPath(); ctx.moveTo(nx - lw/2, ly); ctx.lineTo(nx + lw/2, ly); ctx.stroke();
+      }
+
+      // Glow halo
+      const gl = ctx.createRadialGradient(nx, ny, 0, nx, ny, noteR*4.5);
+      gl.addColorStop(0, 'rgba(28,18,6,0.10)');
+      gl.addColorStop(1, 'rgba(28,18,6,0)');
+      ctx.fillStyle = gl;
+      ctx.beginPath(); ctx.arc(nx, ny, noteR*4.5, 0, Math.PI*2); ctx.fill();
+
+      // Note head — hollow (half) for vowels, filled (quarter) for consonants
+      const isVowel = ['A','E','I','O','U'].includes(ev.ch);
+      ctx.save();
+      ctx.translate(nx, ny);
+      ctx.rotate(-0.18);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, noteR*1.38, noteR*0.82, 0, 0, Math.PI*2);
+      if (isVowel) {
+        ctx.strokeStyle = pal.dotCore;
+        ctx.lineWidth   = 0.95*S;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = pal.dotCore;
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Stem — up from right side (step ≤ 4), down from left side (step > 4)
+      const stemLen = staffSp * 3.2;
+      ctx.strokeStyle = pal.dotCore;
+      ctx.lineWidth   = 0.78*S;
+      if (step <= 4) {
+        ctx.beginPath();
+        ctx.moveTo(nx + noteR*1.28, ny);
+        ctx.lineTo(nx + noteR*1.28, ny - stemLen);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(nx - noteR*1.28, ny);
+        ctx.lineTo(nx - noteR*1.28, ny + stemLen);
+        ctx.stroke();
+      }
+    }
+
+    // ── Right barline — double on final system, single otherwise ──────────
+    if (s === nSystems - 1) {
+      const dlx = sysX + sysW;
+      ctx.strokeStyle = 'rgba(38,26,12,0.45)';
+      ctx.lineWidth   = 0.7*S;
+      ctx.beginPath(); ctx.moveTo(dlx - 4*S, sysTop); ctx.lineTo(dlx - 4*S, botLine); ctx.stroke();
+      ctx.lineWidth = 2.2*S;
+      ctx.beginPath(); ctx.moveTo(dlx, sysTop); ctx.lineTo(dlx, botLine); ctx.stroke();
+    } else {
+      ctx.strokeStyle = 'rgba(38,26,12,0.38)';
+      ctx.lineWidth   = 0.7*S;
+      ctx.beginPath();
+      ctx.moveTo(sysX + sysW, sysTop);
+      ctx.lineTo(sysX + sysW, botLine);
+      ctx.stroke();
+    }
+  }
+
+  // Footer
+  const ruleY = H - FOOT + 12*S;
+  ctx.strokeStyle = '#c8bfaa'; ctx.lineWidth = 0.5*S;
+  ctx.beginPath(); ctx.moveTo(PAD, ruleY); ctx.lineTo(W-PAD, ruleY); ctx.stroke();
+  
+  // Footer text — hash-D left · PIANO KEY (1/1) center · AVERY LAKE right
+  const fY = H - MARGIN - 3*S;
+  ctx.font = `${6.5*S}px "Space Mono", "Courier New", monospace`;
+  ctx.letterSpacing = '0.13em';
+  ctx.textBaseline = 'middle';
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = pal.textMuted;
+  ctx.fillText('#' + hash.substring(0,8).toUpperCase() + '-SCORE', rX, fY);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = pal.textMain;
+  ctx.fillText('PIANO KEY (1/1)', W/2, fY);
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = pal.textMuted;
+  ctx.fillText('AVERY LAKE', rX + rW, fY);
+  ctx.restore();
+  return canvas;
+}
+
+document.getElementById('btn-theme').addEventListener('click', function() {
+  document.body.classList.toggle('theme-light');
+});
+
+document.getElementById('btn-artifact').addEventListener('click', async function() {
+  this.textContent = 'Generating\u2026';
+  this.disabled = true;
+  try {
+    const canvas = await buildArtifactCanvas(false);
+    let url;
+    try { url = canvas.toDataURL('image/png'); }
+    catch(e) {
+      const c2 = await buildArtifactCanvas(true);
+      url = c2.toDataURL('image/png');
+    }
+    const a = document.createElement('a');
+    a.download = 'piano-key-score.png';
+    a.href = url;
+    a.click();
+    artifactDownloaded = true;
+    tryActivateOrder();
+  } catch(err) {
+    console.error('Artifact generation failed:', err);
+  } finally {
+    this.textContent = 'Download Score';
+    this.disabled = false;
+  }
+});
+
+document.getElementById('btn-log').addEventListener('click', function() {
+  const text = sigIn.value.trim() || '(empty)';
+  const name = document.getElementById('signal-name').value.trim() || 'Anonymous';
+  const ts = new Date().toISOString();
+  const hash = signalHash(text, ts).substring(0,8).toUpperCase();
+  
+  const _EIGHTY_EIGHT = ".,!?'\"()[]<>;:-_+=*/@#$%&|0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const mapping = text.split('').map(ch => {
+    const idx = _EIGHTY_EIGHT.indexOf(ch);
+    const midi = idx >= 0 ? 21 + idx : 'null';
+    return `[${ch}] -> MIDI ${midi}`;
+  }).join('\n');
+
+  const log = [
+    'PIANO KEY —— SIGNAL RECORD',
+    'AVERY LAKE · TYPOGRAPHIC ARTIFACT',
+    '----------------------------------',
+    '',
+    'SIGNAL ID   : #' + hash + '-TYPO',
+    'TIMESTAMP   : ' + ts,
+    'SUBJECT     : ' + name,
+    '',
+    'TECHNICAL FORMULA:',
+    'The 88-character mapping string translates every symbol,',
+    'number, lowercase, and uppercase letter into a chromatic',
+    'pitch on a standard piano (A0 to C8).',
+    '',
+    'SYMBOL MAPPING:',
+    mapping,
+    '',
+    'DENSITY LEGEND:',
+    'Luminance (0-255) maps to the following ASCII weight:',
+    '[0-25]   : 𝄢 (Bass Clef)',
+    '[26-50]  : ♯ (Sharp)',
+    '[51-75]  : ♬ (Sixteenths)',
+    '[76-100] : ♫ (Eighths)',
+    '[101-125]: ♪ (Eighth Note)',
+    '[126-150]: ♩ (Quarter Note)',
+    '[151-175]: ♭ (Flat)',
+    '[176-200]: ♮ (Natural)',
+    '[201-225]: · (Staccato)',
+    '[226-255]: (literal text)',
+    '',
+    '—— SIGNAL START ——',
+    text,
+    '—— END OF RECORD ——'
+  ].join('\n');
+
+  const blob = new Blob([log], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.download = 'piano-key-signal-log.txt';
+  a.href = URL.createObjectURL(blob);
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  logDownloaded = true;
+  lastHash = hash;
+  tryActivateOrder();
+});
+
+// ─── SHARED NOTE MAPPING ────────────────────────────────────────────────────
+const _VOWELS  = new Set(['A','E','I','O','U']);
+
+// 88-character mapping from lowest pitch (A0) to highest pitch (C8)
+const _EIGHTY_EIGHT = ".,!?'\"()[]<>;:-_+=*/@#$%&|0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+function _charToMidi(ch) {
+  const idx = _EIGHTY_EIGHT.indexOf(ch);
+  if (idx >= 0) return 21 + idx; // MIDI 21 is A0, the lowest key
+  return null;
+}
+
+// ─── AUDIO ENGINE ────────────────────────────────────────────────────────────
+let _audioCtx      = null;
+let _playStopTimer = null;
+let _playing       = false;
+
+function _getAudioCtx() {
+  if (!_audioCtx || _audioCtx.state === 'closed') {
+    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return _audioCtx;
+}
+
+function _playPianoNote(ctx, midi, t0, soundDur) {
+  const freq = 440 * Math.pow(2, (midi - 69) / 12);
+
+  // Master envelope: snap attack, exponential decay (piano character)
+  const env = ctx.createGain();
+  env.connect(ctx.destination);
+  env.gain.setValueAtTime(0.001, t0);
+  env.gain.linearRampToValueAtTime(0.40, t0 + 0.007);
+  env.gain.exponentialRampToValueAtTime(0.001, t0 + Math.min(soundDur, 2.0));
+  env.gain.setValueAtTime(0, t0 + soundDur);
+
+  // Fundamental — triangle (warm body)
+  const o1 = ctx.createOscillator();
+  o1.type = 'triangle'; o1.frequency.value = freq;
+  o1.connect(env); o1.start(t0); o1.stop(t0 + soundDur);
+
+  // 2nd harmonic — sine (brightness)
+  const g2 = ctx.createGain(); g2.gain.value = 0.26; g2.connect(env);
+  const o2 = ctx.createOscillator();
+  o2.type = 'sine'; o2.frequency.value = freq * 2;
+  o2.connect(g2); o2.start(t0); o2.stop(t0 + soundDur);
+
+  // 3rd harmonic — sine (presence)
+  const g3 = ctx.createGain(); g3.gain.value = 0.08; g3.connect(env);
+  const o3 = ctx.createOscillator();
+  o3.type = 'sine'; o3.frequency.value = freq * 3;
+  o3.connect(g3); o3.start(t0); o3.stop(t0 + soundDur);
+}
+
+function _buildSeq(text) {
+  // Quarter = consonant | Half = vowel | Rest = whitespace / punctuation
+  const Q = 0.40, H = 0.76, R = 0.22, GAP = 0.06;
+  return text.split('').map(ch => {
+    if (/\s/.test(ch)) return { rest: true, dur: R };
+    const midi = _charToMidi(ch);
+    if (!midi) return { rest: true, dur: R };
+    const v = _VOWELS.has(ch.toUpperCase());
+    return { rest: false, midi, dur: v ? H : Q, sound: (v ? H : Q) - GAP };
+  });
+}
+
+function _setPlayBtn(active) {
+  const btn = document.getElementById('btn-play');
+  if (btn) btn.textContent = active ? 'Stop' : 'Play Melody';
+}
+
+async function _playMelody() {
+  if (_playing) {
+    if (_playStopTimer) { clearTimeout(_playStopTimer); _playStopTimer = null; }
+    try { if (_audioCtx) { _audioCtx.close(); _audioCtx = null; } } catch(e) {}
+    _playing = false;
+    _setPlayBtn(false);
+    return;
+  }
+  const text = sigIn.value.trim();
+  if (!text) return;
+
+  const ctx = _getAudioCtx();
+  if (ctx.state === 'suspended') await ctx.resume();
+
+  const seq = _buildSeq(text);
+  _playing = true;
+  _setPlayBtn(true);
+
+  let t = ctx.currentTime + 0.08;
+  for (const ev of seq) {
+    if (!ev.rest) _playPianoNote(ctx, ev.midi, t, ev.sound);
+    t += ev.dur;
+  }
+
+  const total = seq.reduce((s, e) => s + e.dur, 0);
+  _playStopTimer = setTimeout(() => {
+    _playing = false;
+    _setPlayBtn(false);
+  }, (total + 0.6) * 1000);
+}
+
+document.getElementById('btn-play').addEventListener('click', _playMelody);
+
+// ─── MIDI EXPORT ─────────────────────────────────────────────────────────────
+function _buildMidi(text) {
+  const TPQ   = 480;                         // ticks per quarter note
+  const TEMPO = [0x07, 0xA1, 0x20];          // 500 000 µs = 120 BPM
+  const VEL   = 80;
+
+  function vlq(v) {
+    if (v === 0) return [0];
+    const b = []; let n = v;
+    b.unshift(n & 0x7F); n >>= 7;
+    while (n > 0) { b.unshift((n & 0x7F) | 0x80); n >>= 7; }
+    return b;
+  }
+  function i32(v) { return [(v>>24)&0xFF, (v>>16)&0xFF, (v>>8)&0xFF, v&0xFF]; }
+  function i16(v) { return [(v>>8)&0xFF, v&0xFF]; }
+
+  const td = [];
+  td.push(0x00, 0xFF, 0x51, 0x03, ...TEMPO); // tempo meta event
+
+  let delta = 0;
+  for (const ch of text) {
+    if (/\s/.test(ch)) { delta += Math.round(TPQ * 0.55); continue; }
+    const midi = _charToMidi(ch);
+    if (!midi) { delta += Math.round(TPQ * 0.55); continue; }
+    const dur = _VOWELS.has(ch.toUpperCase()) ? TPQ * 2 : TPQ;
+    td.push(...vlq(delta), 0x90, midi, VEL); // note on
+    delta = 0;
+    td.push(...vlq(dur),   0x80, midi, 0);   // note off
+  }
+  td.push(0x00, 0xFF, 0x2F, 0x00); // end of track
+
+  return new Uint8Array([
+    0x4D,0x54,0x68,0x64, ...i32(6), ...i16(0), ...i16(1), ...i16(TPQ), // MThd
+    0x4D,0x54,0x72,0x6B, ...i32(td.length),                             // MTrk
+    ...td
+  ]);
+}
+
+document.getElementById('btn-midi').addEventListener('click', function() {
+  const text = sigIn.value.trim();
+  if (!text) return;
+  const blob = new Blob([_buildMidi(text)], { type: 'audio/midi' });
+  const a    = document.createElement('a');
+  a.download = 'piano-key-signal.mid';
+  a.href     = URL.createObjectURL(blob);
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+});
+
+// ─── OPTION E: TYPOGRAPHIC PORTRAIT ──────────────────────────────────────────
+
+async function buildPortraitTypographic() {
+  await document.fonts.ready;
+  const text = sigIn.value.trim() || '\u2014';
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const ts = now.getUTCFullYear() + '-' + pad(now.getUTCMonth()+1) + '-' + pad(now.getUTCDate())
+           + ' ' + pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds()) + ' UTC';
+  const hash = signalHash(text, ts).substring(0,8).toUpperCase();
+  lastHash = hash;
+
+  const S = 3; 
+  const W = 900*S, H = 1200*S, PAD = 80*S, MARGIN = 48*S;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Ivory Background
+  ctx.fillStyle = '#fdfbf7'; 
+  ctx.fillRect(0, 0, W, H);
+  ctx.save();
+
+  // Load Image for luminance map
+  var imgW = 0, imgH = 0;
+  var pCanvas = document.createElement('canvas');
+  var pCtx = pCanvas.getContext('2d', {willReadFrequently: true});
+  try {
+    var _dImg = new Image();
+    _dImg.src = DOST_IMG_B64;
+    await new Promise(function(res, rej) { _dImg.onload = res; _dImg.onerror = function() { res(); }; setTimeout(res, 1200); });
+    if (_dImg.naturalWidth > 0) {
+      imgW = _dImg.naturalWidth; imgH = _dImg.naturalHeight;
+      pCanvas.width = imgW; pCanvas.height = imgH;
+      pCtx.drawImage(_dImg, 0, 0);
+    }
+  } catch(e) {}
+  var imgData = (imgW > 0) ? pCtx.getImageData(0, 0, imgW, imgH).data : null;
+
+  function getLuminance(x, y, targetW, targetH) {
+    if (!imgData) return 255;
+    var dia = imgW / imgH, dca = targetW / targetH, dw, dh, dx, dy;
+    if (dia > dca) { dh = targetH; dw = dh * dia; dx = (targetW - dw) / 2; dy = 0; }
+    else           { dw = targetW; dh = dw / dia; dx = 0; dy = (targetH - dh) / 2; }
+    var imgX = Math.floor(((x - dx) / dw) * imgW);
+    var imgY = Math.floor(((y - dy) / dh) * imgH);
+    if (imgX < 0 || imgX >= imgW || imgY < 0 || imgY >= imgH) return 255; 
+    var idx = (imgY * imgW + imgX) * 4;
+    return imgData[idx] * 0.299 + imgData[idx+1] * 0.587 + imgData[idx+2] * 0.114;
+  }
+
+  const chars = text.split('');
+  const drawTop = PAD; const drawBot = H - 88*S - PAD; 
+  const densityChars = [' ', '·', '♮', '♭', '♩', '♪', '♫', '♬', '♯', '𝄢'];
+  const cols = 120; var cellW = W / cols; var rows = Math.floor((drawBot - drawTop) / cellW);
+  
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.font = `${cellW * 1.3}px "Times New Roman", Georgia, serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  
+  var nIdx = 0;
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      var tx = PAD/2 + c * cellW + cellW/2;
+      var ty = drawTop + r * cellW + cellW/2;
+      if (tx > W - PAD/2) continue;
+      
+      var lum = getLuminance(tx, ty, W, H); 
+      var intensity = 1.0 - (lum / 255); 
+      var charIdx = Math.floor(intensity * (densityChars.length - 0.01));
+      var symbol = densityChars[charIdx];
+
+      if (intensity < 0.25 && chars.length > 0) {
+         symbol = chars[nIdx % chars.length];
+         if (/\s/.test(symbol)) symbol = '·';
+         ctx.fillStyle = 'rgba(28, 26, 24, 0.4)'; 
+         nIdx++;
+      } else {
+         ctx.fillStyle = '#1c1a18'; 
+      }
+      if (symbol !== ' ') ctx.fillText(symbol, tx, ty);
+    }
+  }
+
+  // Footer
+  const ruleY = H - 88*S + 12*S;
+  ctx.strokeStyle = 'rgba(28,26,24,0.3)'; ctx.lineWidth = 0.5*S;
+  ctx.beginPath(); ctx.moveTo(PAD, ruleY); ctx.lineTo(W-PAD, ruleY); ctx.stroke();
+
+  const fY = H - MARGIN - 3*S;
+  ctx.font = `${6.5*S}px "Space Mono", "Courier New", monospace`;
+  ctx.letterSpacing = '0.12em'; ctx.textBaseline = 'middle';
+  
+  ctx.textAlign = 'left'; ctx.fillStyle = '#5a5040';
+  ctx.fillText('#' + hash + '-TYPO', PAD, fY);
+  ctx.textAlign = 'center'; ctx.fillStyle = '#1c1a18';
+  ctx.fillText('PIANO KEY (1/1)', W/2, fY);
+  ctx.textAlign = 'right'; ctx.fillStyle = '#5a5040';
+  ctx.fillText('AVERY LAKE', W - PAD, fY);
+
+  ctx.restore();
+  return canvas;
+}
+
+document.getElementById('btn-typo').addEventListener('click', async function() {
+  this.textContent = 'Generating\u2026';
+  this.disabled = true;
+  try {
+    const canvas = await buildPortraitTypographic();
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.download = 'piano-key-signal.png';
+    a.href = url;
+    a.click();
+    artifactDownloaded = true;
+    tryActivateOrder();
+  } catch(err) {
+    console.error('Portrait generation failed:', err);
+  } finally {
+    this.textContent = 'Download Typographic Portrait';
+    this.disabled = false;
+  }
+});
+
+/* ═══════════════════════════════════════════════
+   LIVE PORTRAIT HERO SECTION
+═══════════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('lp-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  const COLS = 72;
+  const FONT_SCALE = 1.28;
+  const REPEL_R = 35;
+  const REPEL_STR = 2.5;
+  const GRAVITY = 0.15;
+  const DRIFT_AMP = 0.6;
+  const DAMPING = 0.85;
+  const densityChars = [' ', '·', '♮', '♭', '♩', '♪', '♫', '♬', '♯', '𝄢'];
+
+  let W = 0, H = 0, cellW = 0, dpr = window.devicePixelRatio || 1;
+  let imgData = null, imgW = 0, imgH = 0;
+  let particles = [];
+  let state = 'idle';
+  let fellAt = 0;
+  let mouseX = -9999, mouseY = -9999;
+  let t = 0;
+  let raf = null;
+  let inView = true;
+
+  const cursorEl = document.getElementById('lp-cursor');
+  const prophecySec = document.getElementById('s-prophecy');
+  const hintEl = document.getElementById('lp-hint');
+
+  function resize() {
+    const sw = window.innerWidth;
+    const sh = window.innerHeight;
+    const aspect = 3/4;
+    let w = Math.min(sw * 0.92, sh * 0.92 * aspect);
+    let h = w / aspect;
+    if (h > sh * 0.92) { h = sh * 0.92; w = h * aspect; }
+    W = Math.floor(w); H = Math.floor(h);
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    canvas.style.top = Math.max(0, (sh - H)/2) + 'px';
+    canvas.style.left = Math.max(0, (sw - W)/2) + 'px';
+    ctx.scale(dpr, dpr);
+    cellW = W / COLS;
+  }
+
+  function getLuminance(x, y, targetW, targetH) {
+    if (!imgData) return 255;
+    const dia = imgW / imgH, dca = targetW / targetH;
+    let dw, dh, dx, dy;
+    if (dia > dca) { dh = targetH; dw = dh * dia; dx = (targetW - dw) / 2; dy = 0; }
+    else           { dw = targetW; dh = dw / dia;  dx = 0; dy = (targetH - dh) / 2; }
+    const imgX = Math.floor(((x - dx) / dw) * imgW);
+    const imgY = Math.floor(((y - dy) / dh) * imgH);
+    if (imgX < 0 || imgX >= imgW || imgY < 0 || imgY >= imgH) return 255;
+    const idx = (imgY * imgW + imgX) * 4;
+    return imgData[idx] * 0.299 + imgData[idx+1] * 0.587 + imgData[idx+2] * 0.114;
+  }
+
+  function buildParticles() {
+    particles = [];
+    const rows = Math.floor(H / cellW);
+    const fontSize = cellW * FONT_SCALE;
+    ctx.font = `${fontSize}px "Times New Roman", Georgia, serif`;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const tx = c * cellW + cellW / 2;
+        const ty = r * cellW + cellW / 2;
+        if (tx > W) continue;
+
+        const lum = getLuminance(tx, ty, W, H);
+        const intensity = 1.0 - (lum / 255);
+        const charIdx = Math.floor(intensity * (densityChars.length - 0.01));
+        const sym = densityChars[charIdx];
+        if (sym === ' ') continue;
+
+        particles.push({
+          sym,
+          intense: intensity >= 0.25,
+          intensity,
+          hx: tx, hy: ty,
+          x: tx, y: ty,
+          vx: 0, vy: 0,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.4 + Math.random() * 0.6,
+          fontSize,
+          fell: false
+        });
+      }
+    }
+  }
+
+  prophecySec.addEventListener('mousemove', e => {
+    cursorEl.classList.add('active');
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top  = e.clientY  + 'px';
+    lastInteraction = performance.now();
+  });
+  
+  prophecySec.addEventListener('mouseleave', () => {
+    cursorEl.classList.remove('active');
+    mouseX = -9999; mouseY = -9999;
+  });
+
+  prophecySec.addEventListener('touchstart', e => {
+    if (e.touches.length > 0) {
+      cursorEl.classList.add('active');
+    }
+  }, { passive: true });
+  
+  prophecySec.addEventListener('touchmove', e => {
+    if (e.touches.length > 0) {
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+      cursorEl.style.left = touch.clientX + 'px';
+      cursorEl.style.top  = touch.clientY  + 'px';
+      lastInteraction = performance.now();
+    }
+  }, { passive: true });
+
+  prophecySec.addEventListener('touchend', () => {
+    cursorEl.classList.remove('active');
+    // small delay to let tap/click logic resolve if it was a quick tap
+    setTimeout(() => { mouseX = -9999; mouseY = -9999; }, 100);
+  }, { passive: true });
+
+  function triggerFall() {
+    if (state === 'fell') return;
+    state = 'fell';
+    fellAt = performance.now();
+    cursorEl.classList.add('fell');
+    hintEl.style.opacity = '0';
+    prophecySec.classList.add('shattered');
+    for (const p of particles) {
+      if (!p.fell) {
+        p.fell = true;
+        p.vy = -(Math.random() * 4 + 1);
+        p.vx = (Math.random() - 0.5) * 3;
+      }
+    }
+  }
+
+  canvas.addEventListener('click', () => { if (inView) triggerFall(); });
+
+  let lastInteraction = performance.now();
+
+  function tick() {
+    if (!inView) {
+      raf = requestAnimationFrame(tick);
+      return;
+    }
+    ctx.clearRect(0, 0, W, H);
+    
+    const isLight = document.body.classList.contains('theme-light');
+    const now = performance.now();
+
+    if (state === 'idle' && now - lastInteraction > 5000) {
+      triggerFall();
+    }
+
+    if (state === 'returning') {
+      let allHome = true;
+      for (const p of particles) {
+        const dx = p.hx - p.x, dy = p.hy - p.y;
+        if (Math.sqrt(dx*dx + dy*dy) > 2) { allHome = false; break; }
+      }
+      if (allHome) {
+        state = 'idle';
+        for (const p of particles) { p.fell = false; p.vx = 0; p.vy = 0; }
+        prophecySec.classList.remove('shattered');
+        hintEl.textContent = 'move cursor to disturb · click to release';
+      }
+    }
+
+    for (const p of particles) {
+      if (state === 'fell' && p.fell) {
+        p.vy += GRAVITY; p.vx *= 0.98;
+        p.x += p.vx; p.y += p.vy;
+        if (p.y > H - 4) { p.y = H - 4; p.vy *= -0.25; p.vx *= 0.7; }
+      } else if (state === 'returning') {
+        const dx = p.hx - p.x, dy = p.hy - p.y;
+        p.vx += dx * 0.003; 
+        p.vy += dy * 0.003;
+        p.vx *= DAMPING; p.vy *= DAMPING;
+        p.x += p.vx; p.y += p.vy;
+      } else {
+        const idleDx = Math.sin(t * p.speed * 0.022 + p.phase) * DRIFT_AMP;
+        const idleDy = Math.cos(t * p.speed * 0.018 + p.phase + 1.3) * DRIFT_AMP * 0.7;
+        let tx = p.hx + idleDx, ty = p.hy + idleDy;
+        const mx = mouseX, my = mouseY, dx = p.x - mx, dy = p.y - my;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < REPEL_R && dist > 0) {
+          const force = (1 - dist / REPEL_R) * REPEL_STR;
+          p.vx += (dx/dist) * force; p.vy += (dy/dist) * force;
+        }
+        p.vx += (tx - p.x) * 0.015; p.vy += (ty - p.y) * 0.015;
+        p.vx *= DAMPING; p.vy *= DAMPING;
+        p.x += p.vx; p.y += p.vy;
+      }
+
+      let fill = '';
+      if (isLight) {
+        fill = p.intense ? '#1c1a18' : 'rgba(28, 26, 24, 0.4)';
+      } else {
+        const a = p.intense ? (0.15 + p.intensity * 0.85) : (0.08 + p.intensity * 0.5);
+        fill = p.intense ? `rgba(200,188,160,${a.toFixed(2)})` : `rgba(160,148,120,${a.toFixed(2)})`;
+      }
+      ctx.font = `${p.fontSize}px "Times New Roman", Georgia, serif`;
+      ctx.fillStyle = fill;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(p.sym, p.x, p.y);
+    }
+    t++;
+    raf = requestAnimationFrame(tick);
+  }
+
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        inView = true;
+        if (state === 'fell') {
+          state = 'returning';
+          cursorEl.classList.remove('fell');
+          hintEl.textContent = 'reconstructing…';
+          hintEl.style.opacity = '1';
+        } else if (state === 'idle') {
+          hintEl.textContent = 'move cursor to disturb · click to release';
+          hintEl.style.opacity = '1';
+        }
+        lastInteraction = performance.now();
+      } else {
+        inView = false;
+        cursorEl.classList.remove('active');
+      }
+    });
+  }, { threshold: 0.1 }).observe(prophecySec);
+
+  setTimeout(async () => {
+    try {
+      const img = new Image();
+      img.onload = () => {
+        imgW = img.naturalWidth; imgH = img.naturalHeight;
+        const off = document.createElement('canvas'); off.width = imgW; off.height = imgH;
+        const octx = off.getContext('2d', { willReadFrequently: true });
+        octx.drawImage(img, 0, 0);
+        imgData = octx.getImageData(0, 0, imgW, imgH).data;
+        resize(); buildParticles();
+        if (!raf) raf = requestAnimationFrame(tick);
+      };
+      img.src = DOST_IMG_B64;
+    } catch(e) {}
+  }, 100);
+
+  window.addEventListener('resize', () => { resize(); buildParticles(); });
+})();
+</script>
+</body>
+</html>
